@@ -1,15 +1,15 @@
 using AngularApp.Server.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
 var conexion = builder.Configuration.GetConnectionString("cn")
     ?? throw new InvalidOperationException("No existe la base de datos");
 
 builder.Services.AddDbContext<ServerDbContext>(
-    op => op.UseMySql(conexion, ServerVersion.Parse("5.7.24")));
+    op => op.UseMySql(conexion, ServerVersion.Parse("8.0.43")));
 
 
 builder.Services.AddControllers();
@@ -28,17 +28,6 @@ builder.Services.AddCors(options =>
         });
 });
 
-builder.Services.AddCors(
-    opciones => {
-        opciones.AddPolicy("Dev", policy =>
-        {
-            policy.AllowAnyOrigin()
-                  .AllowAnyMethod()
-                  .AllowAnyHeader();
-
-        });
-    });
-
 var app = builder.Build();
 
 app.UseDefaultFiles();
@@ -51,7 +40,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseCors("MyPolicy");
-
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

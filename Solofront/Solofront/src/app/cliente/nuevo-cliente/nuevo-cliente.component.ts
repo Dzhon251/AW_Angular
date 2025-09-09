@@ -3,6 +3,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ClienteService } from '../../services/cliente.service';
 import { NgIf } from '@angular/common';
+declare const Swal: any;
 
 @Component({
   selector: 'app-nuevo-cliente',
@@ -72,24 +73,42 @@ export class NuevoClienteComponent implements OnInit {
       console.log("Formulario inválido");
       return;
     }
-    if (this.editar == true) {
-      const cliente = this.clienteforms.value;
-      cliente.id = this.id;
-      this.clienteService.putCliente(cliente).subscribe((cliente) => {
-        if (cliente == null) {
-          alert("No se pudo actualizar el cliente");
+    Swal.fire({
+      title: 'Desea guardar la informacion del cliente?',
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: 'Guardar',
+      denyButtonText: `Cancelar`,
+      icon: 'question',
+    }).then((result: any) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        if (this.editar == true) {
+          const cliente = this.clienteforms.value;
+          cliente.id = this.id;
+          this.clienteService
+            .putCliente(cliente)
+            .subscribe((cliente) => {
+              if (cliente == null) {
+                Swal.fire('Clientes', 'Error al guardar', 'error');
+              }
+              Swal.fire('Clientes', 'Se guardo con exito', 'success');
+              this.clienteforms.reset();
+              this.router.navigate(['']);
+            });
+        } else {
+          const cliente = this.clienteforms.value;
+          this.clienteService
+            .guardarCliente(cliente)
+            .subscribe((uncliente) => {
+              Swal.fire('Clientes', 'Se guardo con exito', 'success');
+              this.clienteforms.reset();
+              this.router.navigate(['']);
+            });
         }
-        this.clienteforms.reset();
-        this.router.navigate(['/']);
-      });
-    } else {
-      const cliente = this.clienteforms.value;
-      this.clienteService.guardarCliente(cliente).subscribe((unCliente) => {
-        console.log('Cliente guardado:');
-        this.clienteforms.reset();
-        console.log(unCliente);
-        this.router.navigate(['/']);
-      });
-    }
+      } else if (result.isDenied) {
+        Swal.fire('Clientes', 'El usuario cancelo la operacion', 'success');
+      }
+    });
   }
 }

@@ -15,7 +15,7 @@ declare const Swal: any;
 })
 export class ClienteComponent {
 
-  listaClientes: ICliente[] = [];
+  listaClientes!: ICliente[];
 
   constructor(
     private clienteService: ClienteService
@@ -42,18 +42,25 @@ export class ClienteComponent {
       confirmButtonText: "Sí, eliminar"
     }).then((result: any) => {
       if (result.isConfirmed) {
-        this.clienteService.eliminarCliente(id).subscribe(() => {
-          Swal.fire("Clientes", "Cliente eliminado con éxito", "success");
-          this.cargarClientes();
+        this.clienteService.eliminarCliente(id).subscribe((id) => {
+          if (id > 0) {
+            this.cargarClientes();
+            Swal.fire(
+              'Cliente Eliminado!',
+              'Gracias por confiar en nuestros servicios!.',
+              'success'
+            );
+          }
         });
       }
     });
   }
 
-  variable_sesion(id:number){
-    sessionStorage.setItem("id_cliente", id.toString());
+  variables_sesion(id: number) {
+    sessionStorage.setItem('id_cliente', id.toString());
   }
-
-  eliminarVariable(){}
+  eliminarvariable() {
+    sessionStorage.removeItem('id_cliente');
+  }
 
 }

@@ -8,7 +8,7 @@ import { ICliente } from '../interfaces/icliente';
 })
 export class ClienteService {
 
-  private readonly apiUrl = 'http://localhost:7112/api/clientes';
+  private readonly apiUrl = 'https://localhost:7112/api/clientes';
 
   constructor(
     private http: HttpClient

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AngularApp.Server.Migrations
 {
     [DbContext(typeof(ServerDbContext))]
-    [Migration("20250826004709_clientes")]
-    partial class clientes
+    [Migration("20250905040908_Inicial")]
+    partial class Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,6 +53,28 @@ namespace AngularApp.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Clientes");
+                });
+
+            modelBuilder.Entity("AngularApp.Server.Model.UsuariosModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("correo")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("nombre")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("pwd")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UsuariosModel");
                 });
 #pragma warning restore 612, 618
         }
